@@ -9,6 +9,7 @@ too much out of the box so I decided to make a more lightweight alternative.
 
 [redux-form]: https://github.com/erikras/redux-form
 
+
 ## Installation
 
 As you'd expect, `react-redux-formal` is available on npm.
@@ -24,11 +25,20 @@ As the name would suggest, `react-redux-formal` depends on `redux` as well as
 $ npm install --save redux react-redux
 ```
 
+
 ## Setup
 
 After you've installed the package, you need to perform a few setup steps before
-it's properly usable. Namely, you need to add its reducer to your store and
-expose the store to your app through `react-redux`'s `Provider`.
+it's properly usable.
+
+Due to the asynchronous nature of the validators, you'll need to have something
+like [redux-thunk][redux-thunk] in place to support action creators that return
+a function. This allows you to do things like API calls in your validators.
+Since you might already have something like this in place, `redux-thunk` is not
+included in the `dependencies` or `peerDependencies` of this package.
+
+Besides that, you need to add the `formReducer` to your store and expose the
+store to your app through `react-redux`'s `Provider`.
 
 ```jsx
 import { Provider } from 'react-redux';
@@ -46,6 +56,11 @@ render((
   </Provider>
 ), document.getElementById('app-container')):
 ```
+
+[redux-thunk]: https://github.com/gaearon/redux-thunk
+
+
+## Usage
 
 With the reducer in place you can use the `connectForm` function to hook your
 app up and have fields injected. For example, a simple login form component
@@ -124,6 +139,7 @@ export default connectForm({
 
 More detailed API documentation will follow.
 
-# License
+
+## License
 
 MIT © [Chiel Kunkels](http://kunkels.me/)
