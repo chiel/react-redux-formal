@@ -5,11 +5,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reduxSpy from 'redux-spy';
 
-const noop = () => ({});
+const defaultInitialValues = {};
 
 export default options => WrappedForm => connect(
 	state => ({
-		initialValues: (options.getInitialValues || noop)(state),
+		initialValues: options.getInitialValues ?
+			options.getInitialValues(state) :
+			defaultInitialValues,
 	}),
 	dispatch => bindActionCreators(formActions, dispatch)
 )(reduxSpy(state => ({
