@@ -1,5 +1,5 @@
 import * as formActions from './formActions';
-import * as inputTypes from './inputTypes';
+import * as coreInputTypes from './inputTypes';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -33,6 +33,8 @@ export default options => WrappedForm => connect(
 			this.formValidate = this.formValidate.bind(this);
 			this.getValues = this.getValues.bind(this);
 
+			this.inputTypes = { ...coreInputTypes, ...(options.inputTypes || {}) };
+
 			props.formInit(
 				options.name,
 				options.fields,
@@ -57,7 +59,7 @@ export default options => WrappedForm => connect(
 			const fieldComponents = {};
 			Object.keys(options.fields).forEach(fieldName => {
 				const field = options.fields[fieldName];
-				const InputType = inputTypes[field.type];
+				const InputType = this.inputTypes[field.type];
 
 				const ConnectedInput = connect(state => ({
 					error: state.form[options.name].fields[fieldName].error,

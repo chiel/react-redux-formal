@@ -153,6 +153,8 @@ original component which should be used instead.
     reused when injecting fields into your component.
   - [`getInitialValues`] *(Function)*: A function which allows you to select
     initial state for your form. This gets passed the entire state of your app.
+  - [`inputTypes`] *(Object)*: Custom input types. This can be used to specify
+    your own input types if you don't want to use the ones provided.
 - `component` *(Component)*: The component to wrap.
 
 
