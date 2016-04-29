@@ -137,7 +137,23 @@ export default connectForm({
 })(Signup);
 ```
 
-More detailed API documentation will follow.
+
+## API
+
+### `connectForm(options)(component)`
+
+Generate fields that are injected into the wrapped component. Does not modify
+the component passed to it. Instead it returns a new component which wraps the
+original component which should be used instead.
+
+- `options` *(Object)*
+  - `name` *(String)*: Name of the form, this is used to store the form in redux
+    under its own namespace. Ensure this is unique for each form.
+  - `fields` *(Object)*: Object containing field specifications. The key will be
+    reused when injecting fields into your component.
+  - [`getInitialValues`] *(Function)*: A function which allows you to select
+    initial state for your form. This gets passed the entire state of your app.
+- `component` *(Component)*: The component to wrap.
 
 
 ## License
