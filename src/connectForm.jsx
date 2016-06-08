@@ -95,8 +95,24 @@ export default options => WrappedForm => connect(
 		}
 
 		render() {
+			const { ...customProps } = this.props;
+
+			[
+				'fieldUpdate',
+				'fieldValidate',
+				'fieldValidateSuccess',
+				'fieldValidateFailure',
+				'formInit',
+				'formValidate',
+				'initialValues',
+				'spy',
+			].forEach(prop => {
+				delete customProps[prop];
+			});
+
 			return (
 				<WrappedForm
+					{...customProps}
 					fields={this.createFields()}
 					formValidate={this.formValidate}
 					getValues={this.getValues}
