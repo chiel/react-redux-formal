@@ -8,9 +8,9 @@ import reduxSpy from 'redux-spy';
 const defaultInitialValues = {};
 
 export default options => WrappedForm => connect(
-	state => ({
+	(...args) => ({
 		initialValues: options.getInitialValues ?
-			options.getInitialValues(state) :
+			options.getInitialValues(...args) :
 			defaultInitialValues,
 	}),
 	dispatch => bindActionCreators(formActions, dispatch)

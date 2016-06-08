@@ -152,7 +152,8 @@ original component which should be used instead.
   - `fields` *(Object)*: Object containing field specifications. The key will be
     reused when injecting fields into your component.
   - [`getInitialValues`] *(Function)*: A function which allows you to select
-    initial state for your form. This gets passed the entire state of your app.
+    initial state for your form. This gets passed the same arguments as redux
+    `connect`'s `mapStateToProps`.
   - [`inputTypes`] *(Object)*: Custom input types. This can be used to specify
     your own input types if you don't want to use the ones provided.
 - `component` *(Component)*: The component to wrap.
