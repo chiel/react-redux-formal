@@ -32,10 +32,10 @@
   },
   "homepage": "https://github.com/chielkunkels/react-redux-formal#readme",
   "peerDependencies": {
-    "react": "^15.0.1",
-    "react-redux": "^4.4.5",
-    "redux": "^3.5.1",
-    "redux-spy": "^1.0.1"
+    "react": "*",
+    "react-redux": "*",
+    "redux": "*",
+    "redux-spy": "*"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
