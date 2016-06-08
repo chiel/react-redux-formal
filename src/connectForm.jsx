@@ -27,18 +27,20 @@ export default options => WrappedForm => connect(
 			spy: React.PropTypes.func.isRequired,
 		}
 
-		constructor(props) {
+		constructor() {
 			super();
 
 			this.formValidate = this.formValidate.bind(this);
 			this.getValues = this.getValues.bind(this);
 
 			this.inputTypes = { ...coreInputTypes, ...(options.inputTypes || {}) };
+		}
 
-			props.formInit(
+		componentWillMount() {
+			this.props.formInit(
 				options.name,
 				options.fields,
-				props.initialValues
+				this.props.initialValues
 			);
 		}
 
