@@ -109,7 +109,7 @@ export class Signup extends React.Component {
 	}
 }
 
-export default connectForm({
+export default connectForm(() => {
 	name: 'signup',
 	fields: {
 		username: {
@@ -140,20 +140,21 @@ export default connectForm({
 
 ## API
 
-### `connectForm(options)(component)`
+### `connectForm(mapStateToOptions)(component)`
 
 Generate fields that are injected into the wrapped component. Does not modify
 the component passed to it. Instead it returns a new component which wraps the
 original component which should be used instead.
 
-- `options` *(Object)*
+- `mapStateToOptions` *(Function)*: A function which should return an object
+  with options for your form. This gets passed the same arguments as redux
+  `connect`'s `mapStateToProps`. The return `options` object can have the
+  following keys:
   - `name` *(String)*: Name of the form, this is used to store the form in redux
     under its own namespace. Ensure this is unique for each form.
   - `fields` *(Object)*: Object containing field specifications. The key will be
     reused when injecting fields into your component.
-  - [`getInitialValues`] *(Function)*: A function which allows you to select
-    initial state for your form. This gets passed the same arguments as redux
-    `connect`'s `mapStateToProps`.
+  - [`values`] *(Object)*: Initial values to populate the fields with.
   - [`inputTypes`] *(Object)*: Custom input types. This can be used to specify
     your own input types if you don't want to use the ones provided.
 - `component` *(Component)*: The component to wrap.

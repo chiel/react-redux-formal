@@ -5,20 +5,18 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reduxSpy from 'redux-spy';
 
-const defaultInitialValues = {};
-
-export default options => WrappedForm => {
+export default setup => WrappedForm => {
 	class Form extends React.Component {
 		static propTypes = {
 			fieldUpdate: React.PropTypes.func.isRequired,
 			fieldValidate: React.PropTypes.func.isRequired,
 			formInit: React.PropTypes.func.isRequired,
 			formValidate: React.PropTypes.func.isRequired,
-			initialValues: React.PropTypes.object.isRequired,
+			options: React.PropTypes.object.isRequired,
 			spy: React.PropTypes.func.isRequired,
 		}
 
-		constructor() {
+		constructor({ options }) {
 			super();
 
 			this.formValidate = this.formValidate.bind(this);
@@ -28,10 +26,12 @@ export default options => WrappedForm => {
 		}
 
 		componentWillMount() {
-			this.props.formInit(
+			const { formInit, options } = this.props;
+
+			formInit(
 				options.name,
 				options.fields,
-				this.props.initialValues
+				options.values || {}
 			);
 		}
 
@@ -40,20 +40,26 @@ export default options => WrappedForm => {
 		}
 
 		change(fieldName) {
+			const { fieldUpdate, options } = this.props;
+
 			return value => {
-				this.props.fieldUpdate(options.name, fieldName, value);
+				fieldUpdate(options.name, fieldName, value);
 			};
 		}
 
 		validate(fieldName, validators) {
+			const { fieldValidate, options } = this.props;
+
 			return value => {
-				this.props.fieldValidate(options.name, fieldName, validators, value)
+				fieldValidate(options.name, fieldName, validators, value)
 					.catch(() => {});
 			};
 		}
 
 		formValidate() {
-			return this.props.formValidate(
+			const { formValidate, options } = this.props;
+
+			return formValidate(
 				options.name,
 				options.fields,
 				this.getValues()
@@ -62,6 +68,8 @@ export default options => WrappedForm => {
 		}
 
 		createFields() {
+			const { options } = this.props;
+
 			const fieldComponents = {};
 			Object.keys(options.fields).forEach(fieldName => {
 				const field = options.fields[fieldName];
@@ -95,7 +103,7 @@ export default options => WrappedForm => {
 				'fieldValidateFailure',
 				'formInit',
 				'formValidate',
-				'initialValues',
+				'options',
 				'spy',
 			].forEach(prop => {
 				delete customProps[prop];
@@ -112,18 +120,20 @@ export default options => WrappedForm => {
 		}
 	}
 
-	const Spy = reduxSpy(
-		state => ({
-			values: (state.form[options.name] || { values: {} }).values,
-		})
-	)(Form);
+	function SpyWrap({ ...props }) {
+		const Spy = reduxSpy(state => ({
+			values: (state.form[props.options.name] || { values: {} }).values,
+		}))(Form);
+
+		return <Spy {...props} />;
+	}
+
+	SpyWrap.propTypes = {
+		options: React.PropTypes.object.isRequired,
+	};
 
 	return connect(
-		(...args) => ({
-			initialValues: options.getInitialValues ?
-				options.getInitialValues(...args) :
-				defaultInitialValues,
-		}),
+		(...args) => ({ options: setup(...args) }),
 		dispatch => bindActionCreators(formActions, dispatch)
-	)(Spy);
+	)(SpyWrap);
 };
