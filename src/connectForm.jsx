@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import * as formActions from './formActions';
 import * as coreInputTypes from './inputTypes';
 import React from 'react';
@@ -120,17 +121,23 @@ export default setup => WrappedForm => {
 		}
 	}
 
-	function SpyWrap({ ...props }) {
-		const Spy = reduxSpy(state => ({
-			values: (state.form[props.options.name] || { values: {} }).values,
-		}))(Form);
+	class SpyWrap extends React.Component {
+		static propTypes = {
+			options: React.PropTypes.object.isRequired,
+		};
 
-		return <Spy {...props} />;
+		shouldComponentUpdate() {
+			return false;
+		}
+
+		render() {
+			const Spy = reduxSpy(state => ({
+				values: (state.form[this.props.options.name] || { values: {} }).values,
+			}))(Form);
+
+			return <Spy {...this.props} />;
+		}
 	}
-
-	SpyWrap.propTypes = {
-		options: React.PropTypes.object.isRequired,
-	};
 
 	return connect(
 		(...args) => ({ options: setup(...args) }),
