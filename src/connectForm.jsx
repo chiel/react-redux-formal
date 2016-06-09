@@ -7,16 +7,7 @@ import reduxSpy from 'redux-spy';
 
 const defaultInitialValues = {};
 
-export default options => WrappedForm => connect(
-	(...args) => ({
-		initialValues: options.getInitialValues ?
-			options.getInitialValues(...args) :
-			defaultInitialValues,
-	}),
-	dispatch => bindActionCreators(formActions, dispatch)
-)(reduxSpy(state => ({
-	values: (state.form[options.name] || { values: {} }).values,
-}))(
+export default options => WrappedForm => {
 	class Form extends React.Component {
 		static propTypes = {
 			fieldUpdate: React.PropTypes.func.isRequired,
@@ -44,6 +35,10 @@ export default options => WrappedForm => connect(
 			);
 		}
 
+		getValues() {
+			return this.props.spy('values');
+		}
+
 		change(fieldName) {
 			return value => {
 				this.props.fieldUpdate(options.name, fieldName, value);
@@ -55,6 +50,15 @@ export default options => WrappedForm => connect(
 				this.props.fieldValidate(options.name, fieldName, validators, value)
 					.catch(() => {});
 			};
+		}
+
+		formValidate() {
+			return this.props.formValidate(
+				options.name,
+				options.fields,
+				this.getValues()
+			)
+				.then(() => Promise.resolve(this.getValues()));
 		}
 
 		createFields() {
@@ -79,19 +83,6 @@ export default options => WrappedForm => connect(
 			});
 
 			return fieldComponents;
-		}
-
-		formValidate() {
-			return this.props.formValidate(
-				options.name,
-				options.fields,
-				this.getValues()
-			)
-				.then(() => Promise.resolve(this.getValues()));
-		}
-
-		getValues() {
-			return this.props.spy('values');
 		}
 
 		render() {
@@ -120,4 +111,19 @@ export default options => WrappedForm => connect(
 			);
 		}
 	}
-));
+
+	const Spy = reduxSpy(
+		state => ({
+			values: (state.form[options.name] || { values: {} }).values,
+		})
+	)(Form);
+
+	return connect(
+		(...args) => ({
+			initialValues: options.getInitialValues ?
+				options.getInitialValues(...args) :
+				defaultInitialValues,
+		}),
+		dispatch => bindActionCreators(formActions, dispatch)
+	)(Spy);
+};
