@@ -42,7 +42,7 @@ store to your app through `react-redux`'s `Provider`.
 
 ```jsx
 import { Provider } from 'react-redux';
-import formReducer from 'react-redux-formal/lib/formReducer';
+import { formReducer } from 'react-redux-formal';
 import { render } from 'react-dom';
 import { combineReducers, createStore } from 'redux';
 
@@ -68,8 +68,7 @@ might look something like this:
 
 ```jsx
 import React from 'react';
-import connectForm from 'react-redux-formal/lib/connectForm';
-import * as v from 'react-redux-formal/lib/utils/validators';
+import { connectForm, validators } from 'react-redux-formal';
 
 export class Signup extends React.Component {
 	static propTypes = {
@@ -116,21 +115,21 @@ export default connectForm(() => {
 			type: 'text',
 			label: 'Username',
 			validators: [
-				v.required('Username is required'),
+				validators.required('Username is required'),
 			],
 		},
 		email: {
 			type: 'text',
 			label: 'E-mail',
 			validators: [
-				v.required('E-mail is required'),
+				validators.required('E-mail is required'),
 			],
 		},
 		password: {
 			type: 'text',
 			label: 'Password',
 			validators: [
-				v.required('Password is required'),
+				validators.required('Password is required'),
 			],
 		},
 	},
