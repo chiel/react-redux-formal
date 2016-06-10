@@ -78,6 +78,17 @@ export function formInit(formName, fields, values) {
 }
 
 /**
+ * Reset a form's values back to its initial values
+ *
+ * @param {String} formName - Form to reset
+ *
+ * @return {Object} - The action
+ */
+export function formReset(formName) {
+	return { type: c.FORM_RESET, formName };
+}
+
+/**
  * Validate given form
  *
  * @param {String} formName - Form to validate

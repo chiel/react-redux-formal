@@ -26,6 +26,22 @@ export default function formReducer(state = {}, action) {
 	}
 
 	/**
+	 * FORM_RESET
+	 *
+	 * Reset a form's values to its initial values
+	 */
+	if (action.type === c.FORM_RESET) {
+		return { ...state,
+			[action.formName]: {
+				...state[action.formName],
+				values: {
+					...state[action.formName].initial,
+				},
+			},
+		};
+	}
+
+	/**
 	 * FIELD_UPDATE_VALUE
 	 *
 	 * Update the value of a field
