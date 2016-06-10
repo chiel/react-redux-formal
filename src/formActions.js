@@ -67,7 +67,7 @@ export function fieldValidate(formName, fieldName, validators, value) {
 /**
  * Initialize a form
  *
- * @param {String} formName - Form to validate
+ * @param {String} formName - Form to initialise
  * @param {Object} fields   - Form fields
  * @param {Object} values   - Form values
  *
