@@ -20,8 +20,7 @@ export default function formReducer(state = {}, action) {
 	 * @param {Object} action.values
 	 */
 	if (action.type === c.FORM_INIT) {
-		return {
-			...state,
+		return { ...state,
 			[action.formName]: createDefaultForm(action.fields, action.values),
 		};
 	}
