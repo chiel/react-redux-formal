@@ -141,7 +141,15 @@ export default setup => WrappedForm => {
 	}
 
 	return connect(
-		(...args) => ({ options: setup(...args) }),
+		(...args) => {
+			let memoized;
+			return (function getMemoizedState() {
+				if (memoized) return memoized;
+
+				memoized = { options: setup(...args) };
+				return memoized;
+			}());
+		},
 		dispatch => bindActionCreators(formActions, dispatch)
 	)(SpyWrap);
 };
