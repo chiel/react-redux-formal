@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rimraf lib && babel -d lib src",
-    "lint": "eslint src test",
+    "lint": "eslint --ext=js --ext=jsx src test",
     "prepublish": "npm run build",
     "test": "babel-node test | tap-spec",
     "watch": "rimraf lib && babel -w -d lib src"

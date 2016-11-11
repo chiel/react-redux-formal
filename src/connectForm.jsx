@@ -86,7 +86,7 @@ export default setup => WrappedForm => {
 					value: state.form[options.name].values[fieldName],
 				}), () => ({}))(InputType);
 
-				fieldComponents[fieldName] = (({ ...props }) => (
+				fieldComponents[fieldName] = props => (
 					<ConnectedInput
 						{...field}
 						{...props}
@@ -94,7 +94,7 @@ export default setup => WrappedForm => {
 						change={this.change(fieldName)}
 						validate={this.validate(fieldName, field.validators)}
 					/>
-				));
+				);
 			});
 
 			return fieldComponents;
