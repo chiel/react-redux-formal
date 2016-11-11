@@ -79,7 +79,7 @@ export default setup => WrappedForm => {
 				const ConnectedInput = connect(state => ({
 					error: state.form[options.name].fields[fieldName].error,
 					value: state.form[options.name].values[fieldName],
-				}))(InputType);
+				}), () => ({}))(InputType);
 
 				fieldComponents[fieldName] = (({ ...props }) => (
 					<ConnectedInput
