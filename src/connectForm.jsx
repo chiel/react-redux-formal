@@ -1,20 +1,25 @@
 /* eslint-disable react/no-multi-comp */
-import * as formActions from './formActions';
-import * as coreInputTypes from './inputTypes';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import reduxSpy from 'redux-spy';
 
+import * as formActions from './formActions';
+import * as coreInputTypes from './inputTypes';
+
+const PT = React.PropTypes;
+
 export default setup => WrappedForm => {
 	class Form extends React.Component {
 		static propTypes = {
-			fieldUpdate: React.PropTypes.func.isRequired,
-			fieldValidate: React.PropTypes.func.isRequired,
-			formInit: React.PropTypes.func.isRequired,
-			formValidate: React.PropTypes.func.isRequired,
-			options: React.PropTypes.object.isRequired,
-			spy: React.PropTypes.func.isRequired,
+			fieldUpdate: PT.func.isRequired,
+			fieldValidate: PT.func.isRequired,
+			formInit: PT.func.isRequired,
+			formValidate: PT.func.isRequired,
+			options: PT.shape({
+				name: PT.string.isRequired,
+			}).isRequired,
+			spy: PT.func.isRequired,
 		}
 
 		constructor({ options }) {
@@ -32,7 +37,7 @@ export default setup => WrappedForm => {
 			formInit(
 				options.name,
 				options.fields,
-				options.values || {}
+				options.values || {},
 			);
 		}
 
@@ -63,7 +68,7 @@ export default setup => WrappedForm => {
 			return formValidate(
 				options.name,
 				options.fields,
-				this.getValues()
+				this.getValues(),
 			)
 				.then(() => Promise.resolve(this.getValues()));
 		}
@@ -124,7 +129,9 @@ export default setup => WrappedForm => {
 
 	class SpyWrap extends React.Component {
 		static propTypes = {
-			options: React.PropTypes.object.isRequired,
+			options: PT.shape({
+				name: PT.string.isRequired,
+			}).isRequired,
 		};
 
 		shouldComponentUpdate() {
@@ -150,6 +157,6 @@ export default setup => WrappedForm => {
 				return memoized;
 			}());
 		},
-		dispatch => bindActionCreators(formActions, dispatch)
+		dispatch => bindActionCreators(formActions, dispatch),
 	)(SpyWrap);
 };
