@@ -78,10 +78,8 @@ export default setup => WrappedForm => {
 
 			const fieldComponents = {};
 			Object.keys(options.fields).forEach(fieldName => {
-				const { ...field } = options.fields[fieldName];
+				const { validators, ...field } = options.fields[fieldName];
 				const InputType = this.inputTypes[field.type];
-
-				delete field.validators;
 
 				const ConnectedInput = connect(state => ({
 					error: state.form[options.name].fields[fieldName].error,
@@ -94,7 +92,7 @@ export default setup => WrappedForm => {
 						{...props}
 						name={fieldName}
 						change={this.change(fieldName)}
-						validate={this.validate(fieldName, field.validators)}
+						validate={this.validate(fieldName, validators)}
 					/>
 				);
 			});
