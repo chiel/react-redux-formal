@@ -9,9 +9,10 @@
 export default function createDefaultValues(fields, values = {}) {
 	const defaultValues = {};
 
-	Object.keys(fields).forEach(fieldName => (
-		defaultValues[fieldName] = values[fieldName] || ''
-	));
+	Object.keys(fields).forEach(fieldName => {
+		defaultValues[fieldName] = typeof values[fieldName] !== 'undefined' ?
+			values[fieldName] : '';
+	});
 
 	return defaultValues;
 }
