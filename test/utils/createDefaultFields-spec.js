@@ -4,11 +4,11 @@ import test from 'tape';
 test('utils/createDefaultFields', t => {
 	t.deepEqual(
 		createDefaultFields(
-			{
-				field1: {},
-				field2: {},
-				field3: {},
-			}
+			[
+				'field1',
+				'field2',
+				'field3',
+			],
 		),
 		{
 			field1: {
@@ -27,7 +27,7 @@ test('utils/createDefaultFields', t => {
 				touched: false,
 			},
 		},
-		'should properly create default fields state'
+		'should properly create default fields state',
 	);
 
 	t.end();

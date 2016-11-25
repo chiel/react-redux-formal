@@ -1,98 +1,99 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import reduxSpy from 'redux-spy';
 
-import * as formActions from './formActions';
-import * as coreInputTypes from './inputTypes';
+import { fieldUpdate, fieldValidateFailure, fieldValidateSuccess, formInit } from './formActions';
 
 const PT = React.PropTypes;
 
-export default setup => WrappedForm => {
-	class Form extends React.Component {
+export default setup => WrappedComponent => {
+	class ReactReduxForm extends React.Component {
 		static propTypes = {
-			fieldUpdate: PT.func.isRequired,
-			fieldValidate: PT.func.isRequired,
-			formInit: PT.func.isRequired,
-			formValidate: PT.func.isRequired,
+			dispatch: PT.func.isRequired,
+
 			options: PT.shape({
+				fields: PT.object.isRequired,
 				name: PT.string.isRequired,
 			}).isRequired,
-			spy: PT.func.isRequired,
+
+			// eslint-disable-next-line react/forbid-prop-types
+			values: PT.object.isRequired,
 		}
 
-		constructor({ options }) {
+		/**
+		 * Initialise the form.
+		 */
+		constructor() {
 			super();
-
+			this.inputCache = {};
 			this.formValidate = this.formValidate.bind(this);
-			this.getValues = this.getValues.bind(this);
-
-			this.inputTypes = { ...coreInputTypes, ...(options.inputTypes || {}) };
 		}
 
+		/**
+		 * Ensure the form is present in redux upon mounting
+		 */
 		componentWillMount() {
-			const { formInit, options } = this.props;
+			const { dispatch, options } = this.props;
 
-			formInit(
+			dispatch(formInit(
 				options.name,
-				options.fields,
+				Object.keys(options.fields),
 				options.values || {},
-			);
+			));
 		}
 
-		getValues() {
-			return this.props.spy('values');
-		}
-
-		change(fieldName) {
-			const { fieldUpdate, options } = this.props;
+		/**
+		 * Create a change handler for the given field
+		 *
+		 * @param {String} fieldName
+		 */
+		createChangeHandler(fieldName) {
+			const { dispatch, options } = this.props;
 
 			return value => {
-				fieldUpdate(options.name, fieldName, value);
+				dispatch(fieldUpdate(options.name, fieldName, value));
 			};
 		}
 
-		validate(fieldName, validators) {
-			const { fieldValidate, options } = this.props;
-
+		/**
+		 * Create a validation handler for the given field
+		 *
+		 * @param {String} fieldName
+		 * @param {Array} validators
+		 */
+		createValidateHandler(fieldName, validators) {
 			return value => {
-				fieldValidate(options.name, fieldName, validators, value)
-					.catch(() => {});
+				this.fieldValidate(fieldName, validators, value);
 			};
 		}
 
-		formValidate() {
-			const { formValidate, options } = this.props;
-
-			return formValidate(
-				options.name,
-				options.fields,
-				this.getValues(),
-			)
-				.then(() => Promise.resolve(this.getValues()));
-		}
-
+		/**
+		 * Create field components for each desired field
+		 */
 		createFields() {
-			const { options } = this.props;
-
+			const { options: { fields, inputTypes, name } } = this.props;
 			const fieldComponents = {};
-			Object.keys(options.fields).forEach(fieldName => {
-				const { validators, ...field } = options.fields[fieldName];
-				const InputType = this.inputTypes[field.type];
+
+			Object.keys(fields).forEach(fieldName => {
+				if (this.inputCache[fieldName]) {
+					fieldComponents[fieldName] = this.inputCache[fieldName];
+					return;
+				}
+
+				const { validators, ...field } = fields[fieldName];
+				const InputType = inputTypes[field.type];
 
 				const ConnectedInput = connect(state => ({
-					error: state.form[options.name].fields[fieldName].error,
-					value: state.form[options.name].values[fieldName],
+					error: state.form[name].fields[fieldName].error,
+					value: state.form[name].values[fieldName],
 				}), () => ({}))(InputType);
 
-				fieldComponents[fieldName] = props => (
+				this.inputCache[fieldName] = fieldComponents[fieldName] = fieldProps => (
 					<ConnectedInput
 						{...field}
-						{...props}
+						{...fieldProps}
 						name={fieldName}
-						change={this.change(fieldName)}
-						validate={this.validate(fieldName, validators)}
+						change={this.createChangeHandler(fieldName)}
+						validate={this.createValidateHandler(fieldName, validators)}
 					/>
 				);
 			});
@@ -100,63 +101,67 @@ export default setup => WrappedForm => {
 			return fieldComponents;
 		}
 
-		render() {
-			const { ...customProps } = this.props;
+		/**
+		 * Validate given field
+		 *
+		 * @param {String} fieldName
+		 * @param {Function[]} validators
+		 * @param {Mixed} value
+		 */
+		fieldValidate(fieldName, validators, value) {
+			if (!validators || !validators.length) return Promise.resolve(value);
 
-			[
-				'fieldUpdate',
-				'fieldValidate',
-				'fieldValidateSuccess',
-				'fieldValidateFailure',
-				'formInit',
-				'formValidate',
-				'options',
-				'spy',
-			].forEach(prop => {
-				delete customProps[prop];
-			});
+			const { dispatch, options: { name: formName } } = this.props;
+
+			const [fv, ...v] = validators;
+
+			return v.reduce((a, b) => a.then(b), fv(value || ''))
+				.then(finalValue => {
+					dispatch(fieldValidateSuccess(formName, fieldName));
+					return Promise.resolve(finalValue);
+				})
+				.catch(err => {
+					dispatch(fieldValidateFailure(formName, fieldName, err));
+					return Promise.reject(err);
+				});
+		}
+
+		/**
+		 * Validate all fields in the form
+		 */
+		formValidate() {
+			const { options: { fields }, values } = this.props;
+
+			return Promise.all(Object.keys(fields).map(fieldName => (
+				this.fieldValidate(fieldName, fields[fieldName].validators, values[fieldName])
+			)))
+				.then(() => Promise.resolve(values));
+		}
+
+		/**
+		 * Render the form
+		 */
+		render() {
+			const { ...props } = this.props;
+
+			delete props.dispatch;
+			delete props.options;
 
 			return (
-				<WrappedForm
-					{...customProps}
+				<WrappedComponent
+					{...props}
 					fields={this.createFields()}
 					formValidate={this.formValidate}
-					getValues={this.getValues}
 				/>
 			);
 		}
 	}
 
-	class SpyWrap extends React.Component {
-		static propTypes = {
-			options: PT.shape({
-				name: PT.string.isRequired,
-			}).isRequired,
+	return connect((state, props) => {
+		const options = setup(state, props);
+		return {
+			options,
+			values: (state.form[options.name] || { values: {} }).values,
 		};
-
-		shouldComponentUpdate() {
-			return false;
-		}
-
-		render() {
-			const Spy = reduxSpy(state => ({
-				values: (state.form[this.props.options.name] || { values: {} }).values,
-			}))(Form);
-
-			return <Spy {...this.props} />;
-		}
-	}
-
-	return connect(
-		(...args) => {
-			let memoized;
-			return (function getMemoizedState() {
-				if (memoized) return memoized;
-
-				memoized = { options: setup(...args) };
-				return memoized;
-			}());
-		},
-		dispatch => bindActionCreators(formActions, dispatch),
-	)(SpyWrap);
+	})(ReactReduxForm);
 };

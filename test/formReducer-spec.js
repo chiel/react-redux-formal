@@ -24,12 +24,12 @@ test('formReducer :: FORM_INIT', t => {
 			{},
 			a.formInit(
 				'testForm1',
-				{
-					field1: {},
-					field2: {},
-					field3: {},
-				}
-			)
+				[
+					'field1',
+					'field2',
+					'field3',
+				],
+			),
 		),
 		{
 			testForm1: {
@@ -62,7 +62,7 @@ test('formReducer :: FORM_INIT', t => {
 				},
 			},
 		},
-		'should properly create initial state for a new form'
+		'should properly create initial state for a new form',
 	);
 
 	t.end();
@@ -88,7 +88,7 @@ test('formReducer :: FIELD_UPDATE_VALUE', t => {
 					},
 				},
 			},
-			a.fieldUpdate('testForm1', 'testField1', 'Value 1')
+			a.fieldUpdate('testForm1', 'testField1', 'Value 1'),
 		),
 		{
 			testForm1: {
@@ -107,7 +107,7 @@ test('formReducer :: FIELD_UPDATE_VALUE', t => {
 				},
 			},
 		},
-		'should update an existing field'
+		'should update an existing field',
 	);
 
 	t.deepEqual(
@@ -129,7 +129,7 @@ test('formReducer :: FIELD_UPDATE_VALUE', t => {
 					},
 				},
 			},
-			a.fieldUpdate('testForm1', 'testField1', '')
+			a.fieldUpdate('testForm1', 'testField1', ''),
 		),
 		{
 			testForm1: {
@@ -148,7 +148,7 @@ test('formReducer :: FIELD_UPDATE_VALUE', t => {
 				},
 			},
 		},
-		'should not mark a field as dirty if the value is same as the initial value'
+		'should not mark a field as dirty if the value is same as the initial value',
 	);
 
 	t.end();
@@ -174,7 +174,7 @@ test('formReducer :: FIELD_VALIDATE_FAILURE', t => {
 					},
 				},
 			},
-			a.fieldValidateFailure('testForm1', 'testField1', 'Error 1')
+			a.fieldValidateFailure('testForm1', 'testField1', 'Error 1'),
 		),
 		{
 			testForm1: {
@@ -193,7 +193,7 @@ test('formReducer :: FIELD_VALIDATE_FAILURE', t => {
 				},
 			},
 		},
-		'should add a new field error'
+		'should add a new field error',
 	);
 
 	t.deepEqual(
@@ -215,7 +215,7 @@ test('formReducer :: FIELD_VALIDATE_FAILURE', t => {
 					},
 				},
 			},
-			a.fieldValidateFailure('testForm1', 'testField1', 'Error 1')
+			a.fieldValidateFailure('testForm1', 'testField1', 'Error 1'),
 		),
 		{
 			testForm1: {
@@ -234,7 +234,7 @@ test('formReducer :: FIELD_VALIDATE_FAILURE', t => {
 				},
 			},
 		},
-		'should update an existing field error'
+		'should update an existing field error',
 	);
 
 	t.end();
@@ -260,7 +260,7 @@ test('formReducer :: FIELD_VALIDATE_SUCCESS', t => {
 					},
 				},
 			},
-			a.fieldValidateSuccess('testForm1', 'testField1')
+			a.fieldValidateSuccess('testForm1', 'testField1'),
 		),
 		{
 			testForm1: {
@@ -279,7 +279,7 @@ test('formReducer :: FIELD_VALIDATE_SUCCESS', t => {
 				},
 			},
 		},
-		'should clear a field error properly'
+		'should clear a field error properly',
 	);
 
 	t.end();

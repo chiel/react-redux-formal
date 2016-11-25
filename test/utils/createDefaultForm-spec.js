@@ -4,12 +4,12 @@ import test from 'tape';
 test('utils/createDefaultForm', t => {
 	t.deepEqual(
 		createDefaultForm(
-			{
-				field1: {},
-			},
+			[
+				'field1',
+			],
 			{
 				field1: 'Value 1',
-			}
+			},
 		),
 		{
 			fields: {
@@ -26,7 +26,7 @@ test('utils/createDefaultForm', t => {
 				field1: 'Value 1',
 			},
 		},
-		'should properly create default form state'
+		'should properly create default form state',
 	);
 
 	t.end();

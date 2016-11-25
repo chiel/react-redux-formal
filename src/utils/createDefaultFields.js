@@ -14,10 +14,9 @@ const initialFieldState = {
 export default function createDefaultFields(fields) {
 	const defaultFields = {};
 
-	Object.keys(fields).forEach(fieldName => (
+	fields.forEach(fieldName => (
 		defaultFields[fieldName] = { ...initialFieldState }
 	));
 
 	return defaultFields;
 }
-
