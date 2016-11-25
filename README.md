@@ -90,9 +90,9 @@ export class Signup extends React.Component {
 
 		return (
 			<form onSubmit={this.onSubmit}>
-				{fields.username}
-				{fields.email}
-				{fields.password}
+				<fields.username />
+				<fields.email />
+				<fields.password />
 
 				<button type="submit">Sign up</button>
 			</form>
