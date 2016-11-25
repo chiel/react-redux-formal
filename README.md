@@ -28,17 +28,11 @@ $ npm install --save redux react-redux
 
 ## Setup
 
-After you've installed the package, you need to perform a few setup steps before
-it's properly usable.
+After you've installed the package, you'll need to add the `formReducer` to your
+store and expose the store to your app through `react-redux`'s `Provider`.
 
-Due to the asynchronous nature of the validators, you'll need to have something
-like [redux-thunk][redux-thunk] in place to support action creators that return
-a function. This allows you to do things like API calls in your validators.
-Since you might already have something like this in place, `redux-thunk` is not
-included in the `dependencies` or `peerDependencies` of this package.
-
-Besides that, you need to add the `formReducer` to your store and expose the
-store to your app through `react-redux`'s `Provider`.
+*Note:* `react-redux-formal` requires the formReducer to be mounted at
+`state.form`.
 
 ```jsx
 import { Provider } from 'react-redux';
@@ -56,8 +50,6 @@ render((
   </Provider>
 ), document.getElementById('app-container')):
 ```
-
-[redux-thunk]: https://github.com/gaearon/redux-thunk
 
 
 ## Usage
