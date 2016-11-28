@@ -31,6 +31,9 @@
     "url": "https://github.com/chielkunkels/react-redux-formal/issues"
   },
   "homepage": "https://github.com/chielkunkels/react-redux-formal#readme",
+  "dependencies": {
+    "shallow-equals": "^0.0.0"
+  },
   "peerDependencies": {
     "react": "*",
     "react-redux": "*",

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import equals from 'shallow-equals';
 
 import { fieldUpdate, fieldValidateFailure, fieldValidateSuccess, formInit } from './formActions';
 
@@ -39,6 +40,23 @@ export default setup => WrappedComponent => {
 				Object.keys(options.fields),
 				options.values || {},
 			));
+		}
+
+		/**
+		 * Invalidate generated inputs if they're not valid anymore
+		 */
+		componentWillReceiveProps({ options: { fields: nextFields } }) {
+			const { fields } = this.props.options;
+
+			Object.keys(fields).forEach(fieldName => {
+				if (!nextFields[fieldName]) {
+					delete this.inputCache[fieldName];
+				}
+
+				if (!equals(fields[fieldName], nextFields[fieldName])) {
+					delete this.inputCache[fieldName];
+				}
+			});
 		}
 
 		/**
