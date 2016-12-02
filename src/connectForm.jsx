@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import equals from 'shallow-equals';
 
-import { fieldUpdate, fieldValidateFailure, fieldValidateSuccess, formInit } from './formActions';
+import { fieldUpdate, fieldValidateFailure, fieldValidateSuccess, formAddField, formInit } from './formActions';
 
 const PT = React.PropTypes;
 
@@ -44,9 +44,10 @@ export default setup => WrappedComponent => {
 
 		/**
 		 * Invalidate generated inputs if they're not valid anymore
+		 * Additionally, create initial state for any fields that were added
 		 */
-		componentWillReceiveProps({ options: { fields: nextFields } }) {
-			const { fields } = this.props.options;
+		componentWillReceiveProps({ options: { fields: nextFields, values: nextValues } }) {
+			const { fields, name } = this.props.options;
 
 			Object.keys(fields).forEach(fieldName => {
 				if (!nextFields[fieldName]) {
@@ -56,6 +57,11 @@ export default setup => WrappedComponent => {
 				if (!equals(fields[fieldName], nextFields[fieldName])) {
 					delete this.inputCache[fieldName];
 				}
+			});
+
+			Object.keys(nextFields).forEach(fieldName => {
+				if (fields[fieldName]) return;
+				this.props.dispatch(formAddField(name, fieldName, nextValues[fieldName]));
 			});
 		}
 
