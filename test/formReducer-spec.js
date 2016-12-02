@@ -68,6 +68,86 @@ test('formReducer :: FORM_INIT', t => {
 	t.end();
 });
 
+test('formReducer :: FORM_ADD_FIELD', t => {
+	t.deepEqual(
+		reducer(
+			{
+				testForm1: {
+					fields: {
+						field1: {
+							dirty: false,
+							error: null,
+							touched: false,
+						},
+						field2: {
+							dirty: false,
+							error: null,
+							touched: false,
+						},
+						field3: {
+							dirty: false,
+							error: null,
+							touched: false,
+						},
+					},
+					initial: {
+						field1: '',
+						field2: '',
+						field3: '',
+					},
+					values: {
+						field1: '',
+						field2: '',
+						field3: '',
+					},
+				},
+			},
+			a.formAddField('testForm1', 'field4'),
+		),
+		{
+			testForm1: {
+				fields: {
+					field1: {
+						dirty: false,
+						error: null,
+						touched: false,
+					},
+					field2: {
+						dirty: false,
+						error: null,
+						touched: false,
+					},
+					field3: {
+						dirty: false,
+						error: null,
+						touched: false,
+					},
+					field4: {
+						dirty: false,
+						error: null,
+						touched: false,
+					},
+				},
+				initial: {
+					field1: '',
+					field2: '',
+					field3: '',
+					field4: '',
+				},
+				values: {
+					field1: '',
+					field2: '',
+					field3: '',
+					field4: '',
+				},
+			},
+		},
+		'should add initial field state, initial value and current value for the new field',
+	);
+
+	t.end();
+});
+
 test('formReducer :: FIELD_UPDATE_VALUE', t => {
 	t.deepEqual(
 		reducer(

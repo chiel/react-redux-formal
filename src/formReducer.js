@@ -1,4 +1,5 @@
 import * as c from './formConstants';
+import { initialFieldState } from './utils/createDefaultFields';
 import createDefaultForm from './utils/createDefaultForm';
 
 /**
@@ -22,6 +23,40 @@ export default function formReducer(state = {}, action) {
 	if (action.type === c.FORM_INIT) {
 		return { ...state,
 			[action.formName]: createDefaultForm(action.fields, action.values),
+		};
+	}
+
+	/**
+	 * FORM_ADD_FIELD
+	 *
+	 * Add a new field to the form
+	 *
+	 * @param {String} action.formName
+	 * @param {String} action.fieldName
+	 * @param {Mixed} action.value
+	 */
+	if (action.type === c.FORM_ADD_FIELD) {
+		const value = typeof action.value !== 'undefined' ? action.value : '';
+
+		return {
+			...state,
+			[action.formName]: {
+				...state[action.formName],
+				fields: {
+					...state[action.formName].fields,
+					[action.fieldName]: {
+						...initialFieldState,
+					},
+				},
+				initial: {
+					...state[action.formName].values,
+					[action.fieldName]: value,
+				},
+				values: {
+					...state[action.formName].values,
+					[action.fieldName]: value,
+				},
+			},
 		};
 	}
 

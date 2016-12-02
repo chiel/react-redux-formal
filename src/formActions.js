@@ -39,6 +39,17 @@ export function fieldValidateFailure(formName, fieldName, error) {
 }
 
 /**
+ * Add a new field to a form
+ *
+ * @param {String} formName  - Form to add field to
+ * @param {String} fieldName - Name of the field to add
+ * @param {Mixed} value      - Initial value of the field
+ */
+export function formAddField(formName, fieldName, value) {
+	return { type: c.FORM_ADD_FIELD, formName, fieldName, value };
+}
+
+/**
  * Initialize a form
  *
  * @param {String} formName - Form to initialise

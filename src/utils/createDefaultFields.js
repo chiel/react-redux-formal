@@ -1,4 +1,4 @@
-const initialFieldState = {
+export const initialFieldState = {
 	dirty: false,
 	error: null,
 	touched: false,
