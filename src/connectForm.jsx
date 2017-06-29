@@ -1,10 +1,9 @@
+import PT from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import equals from 'shallow-equals';
 
 import { fieldUpdate, fieldValidateFailure, fieldValidateSuccess, formAddField, formInit } from './formActions';
-
-const PT = React.PropTypes;
 
 export default setup => WrappedComponent => {
 	class ReactReduxForm extends React.Component {

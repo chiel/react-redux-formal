@@ -1,5 +1,7 @@
-import field from '../Field';
+import PT from 'prop-types';
 import React from 'react';
+
+import field from '../Field';
 
 export function InputText({ change, validate, ...props }) {
 	return (
@@ -15,8 +17,8 @@ export function InputText({ change, validate, ...props }) {
 }
 
 InputText.propTypes = {
-	change: React.PropTypes.func.isRequired,
-	validate: React.PropTypes.func.isRequired,
+	change: PT.func.isRequired,
+	validate: PT.func.isRequired,
 };
 
 export default field(InputText);

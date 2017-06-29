@@ -35,6 +35,7 @@
     "shallow-equals": "^0.0.0"
   },
   "peerDependencies": {
+    "prop-types": "*",
     "react": "*",
     "react-redux": "*",
     "redux": "*"

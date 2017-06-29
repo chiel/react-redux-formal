@@ -1,3 +1,4 @@
+import PT from 'prop-types';
 import React from 'react';
 
 export default Input => {
@@ -16,8 +17,8 @@ export default Input => {
 	}
 
 	Field.propTypes = {
-		error: React.PropTypes.string,
-		label: React.PropTypes.string,
+		error: PT.string,
+		label: PT.string,
 	};
 
 	return Field;

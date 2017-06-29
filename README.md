@@ -59,14 +59,15 @@ app up and have fields injected. For example, a simple login form component
 might look something like this:
 
 ```jsx
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connectForm, validators } from 'react-redux-formal';
 
 export class Signup extends React.Component {
 	static propTypes = {
-		fields: React.PropTypes.object.isRequired,
-		formValidate: React.PropTypes.func.isRequired,
-		getValues: React.PropTypes.func.isRequired,
+		fields: PropTypes.object.isRequired,
+		formValidate: PropTypes.func.isRequired,
+		getValues: PropTypes.func.isRequired,
 	}
 
 	constructor() {
